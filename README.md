@@ -1,4 +1,8 @@
-## buildsys
+# BuildSys
+
+[![Build Status](https://travis-ci.com/lexus2k/buildsys.svg?branch=main)](https://travis-ci.com/lexus2k/buildsys)
+
+## About
 
 This is small build system for libraries and the projects.
 It supports building and searching for dependencies, GNU Make and
