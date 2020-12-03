@@ -36,11 +36,17 @@ cppcheck:
 
 clean:
 	rm -rf $(STAGING_DIR)
+	rm -rf $(TARGET_DIR)
+	rm -rf $(HOST_DIR)
+	rm -rf $(ROOT_CACHE_DIR)
 
 %.o: %.c
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(BS_EXTRA_CPPFLAGS) -o $@ $<
 
 %.o: %.cpp
+	$(CXX) -c $(CXXFLAGS) $(CPPFLAGS) $(BS_EXTRA_CPPFLAGS) -o $@ $<
+
+%.o: %.cc
 	$(CXX) -c $(CXXFLAGS) $(CPPFLAGS) $(BS_EXTRA_CPPFLAGS) -o $@ $<
 
 ###################################################################
@@ -93,7 +99,7 @@ endef
 endif
 
 .ts_$(1)_deps: | $($(1)_DEPENDENCIES)
-	@echo "=== Building $(1) ==="
+	@$(call print-info, "=== Building $(1) ===")
 	@touch $$@
 
 $$($(1)_OBJS): .ts_$(1)_deps
@@ -110,18 +116,21 @@ $$($(1)_OBJS): BS_EXTRA_CPPFLAGS = $$($(1)_EXTRA_CPPFLAGS)
 .ts_$(1)_build: BS_EXTRA_LDFLAGS = $$($(1)_EXTRA_LDFLAGS)
 .ts_$(1)_build: $$($(1)_OBJS)
 	$$($(1)_BUILD_CMDS)
+	@$(call print-status, "=== Build $(1) done ===")
 	@touch $$@
 
 .ts_$(1)_install: .ts_$(1)_build
 	$$($(1)_INSTALL_CMDS)
+	@$(call print-status, "=== Install $(1) done ===")
 	@touch $$@
 
 $(1)_clean:
 	$$($(1)_CLEAN_CMDS)
-	@echo "=== $(1): clean OK ==="
+	$(foreach hook,$($(1)_POST_CLEAN_HOOKS),$$(call $(hook)))
+	@$(call print-ok, "=== Clean $(1) done ===")
 
 $(1): .ts_$(1)_build
-	@echo "=== $(1): OK ==="
+	@$(call print-ok, "=== OK $(1) ===")
 
 ifeq ($$($(1)_INSTALL_TARGET),YES)
 install: .ts_$(1)_install

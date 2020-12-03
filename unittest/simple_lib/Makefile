@@ -1,8 +1,6 @@
 default: libsimple
 
-include buildsys/toolchain.mk
-include buildsys/project.mk
-include buildsys/package_make.mk
+include buildsys/main.mk
 
 ##################################################################
 
