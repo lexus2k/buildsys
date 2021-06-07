@@ -22,8 +22,7 @@ Static library from single file (Makefile):
 ```.make
 default: mylibrary
 
-include buildsys/toolchain.mk
-include buildsys/project.mk
+include buildsys/main.mk
 
 PKG = mylibrary
 $(PKG)_SOURCES = src/mylib.c
